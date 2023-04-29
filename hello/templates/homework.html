@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h2>My homeworks</h2>
+    <table class="table">
+        <thread>
+            <tr>
+                <th></th>
+                <th scope="col">Хичээл</th>
+                <th scope="col">Агуулга</th>
+                <th scope="col">Дуусах хуугацаа</th>
+                <th scope="col">Нэмсэн огноо</th>
+                <th scope="col">Зураг</th>
+                <th scope="col">Хичээл</th>
+                <th scope="col">Үйлдэл</th>
+            </tr>
+        </thread>
+        <tbody>
+        {% for homework in homeworks %}
+        <tr>
+            <td><input type="checkbox" {% if homework.done == True %}checked{% endif %}
+                onclick="done(this, '{% url 'homework_done' homework.id %}')"
+                /></td>
+            <th scope="row">{{ homework.title }}</th>
+            <td>{{ homework.content }}</td>
+            <td>{{ homework.deadline }}</td>
+            <td>{{ homework.created_date }}</td>
+            <td>
+                <img width="50%" src="{{MEDIA_URL}}{{homework.image}}">
+           </td>
+            <td>
+                <a href="{% url 'homework_edit' homework.id %}">Засах</a>
+                <a href="{% url 'homework_delete' homework.id%}" onclick="return confirm('Та устгахдаа итгэлтэй байна уу ?')">Устгах</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagintion">
+        <span class="stop-links">
+            {% if homework.has_previous %}
+                <a href="?page=1">first</a>
+                <a href="?page={{ homeworks.previous_page_number}}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ homeworks.number }} of {{homeworks.paginator.run_pages}}
+            </span>
+            {% if homework.has_next %}
+                <a href="?page={{ homeworks.next_page_number}}">next</a>
+                <a href="?page={{ homeworks.paginator.run_pages}}">last</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+<script>
+    function done(target, url){
+        if (target.checked == true){
+            window.location = url + '?done=True'
+        }else{
+            window.location = url + '?done=False'
+        }
+    }
+</script>
+{% endblock %}+
